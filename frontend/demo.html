@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Demo</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-light bg-light mb-3">
+        <span class="navbar-brand mb-0 h1">Demo</span>
+    </nav>
+
+    <div class="container" id="app">
+        <h4>消息区</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">站点</th>
+                    <th scope="col">消息</th>
+                    <th scope="col">时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for='(item, index) in messages'>
+                    <th scope="row">{{ index + 1 }}</th>
+                    <td>{{ item.shop }}</td>
+                    <td>{{ item.content }}</td>
+                    <td>{{ item.time }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <h4>订阅区</h4>
+        <select class="custom-select mb-3" v-model='selected'>
+            <option disabled value="">请选择</option>
+            <option v-for="shop in shops" :value="shop"> {{ shop }} </option>
+        </select>
+        <span>
+            <button class="btn btn-primary" @click='subscribe'>订阅</button>
+            <span> {{ notation }} </span>
+        </span>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                shops: ['水币', '风币', '雷币'],
+                selected: '',
+                notation: '',
+                messages: []
+            },
+            methods: {
+                subscribe: function () {
+                    if (this.selected == '') {
+                        this.notation = '请先选择一个交易所'
+                    } else {
+                        this.notation = '正在尝试链接"' + this.selected + '网"'
+                        // 此处使用 ajax（RESTful风格）向“服务一”发送注册订阅请求
+                    }
+                }
+            },
+            mounted: function () {
+                // 此处与“服务二”建立 WebSocket 连接，以更新 messages
+                var interval = setInterval(function () {
+                    if (app.messages.length > 3) clearInterval(interval)
+                    app.messages.push({
+                        shop: '火币',
+                        content: '测试消息',
+                        time: '18:23'
+                    })
+                }, 2000)
+            }
+        })
+    </script>
+</body>
+
+</html>
