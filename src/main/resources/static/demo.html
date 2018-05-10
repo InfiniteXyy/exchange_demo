@@ -36,7 +36,7 @@
         <h4>订阅区</h4>
         <select class="custom-select mb-3" v-model='selected'>
             <option disabled value="">请选择</option>
-            <option v-for="shop in shops" :value="shop"> {{ shop }} </option>
+            <option v-for="shop in shops" :value="shop"> {{ shop.name }} </option>
         </select>
         <span>
             <button class="btn btn-primary" @click='subscribe'>订阅</button>
@@ -45,11 +45,12 @@
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
         var app = new Vue({
             el: '#app',
             data: {
-                shops: ['水币', '风币', '雷币'],
+                shops: [],
                 selected: '',
                 notation: '',
                 messages: []
@@ -59,12 +60,17 @@
                     if (this.selected == '') {
                         this.notation = '请先选择一个交易所'
                     } else {
-                        this.notation = '正在尝试链接"' + this.selected + '网"'
+                        this.notation = '正在尝试链接"' + this.selected.name + '网"'
                         // 此处使用 ajax（RESTful风格）向“服务一”发送注册订阅请求
                     }
                 }
             },
-            mounted: function () {
+            mounted() {
+                // 从服务一获得所有的列表
+                axios.get('/shop/all')
+                    .then(function (response) {
+                        app.shops = response.data
+                    })
                 // 此处与“服务二”建立 WebSocket 连接，以更新 messages
                 var interval = setInterval(function () {
                     if (app.messages.length > 3) clearInterval(interval)
