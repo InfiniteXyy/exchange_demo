@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Demo</title>
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -13,7 +18,20 @@
         <span class="navbar-brand mb-0 h1">Demo</span>
     </nav>
 
-    <div class="container" id="app">
+    <div class="container" id="app" v-cloak>
+        <h4>订阅区</h4>
+        <div class="mb-3">
+            <select class="custom-select mb-3" v-model='selected'>
+                <option disabled value="">请选择</option>
+                <option v-for="shop in shops" :value="shop"> {{ shop.name }} </option>
+            </select>
+            <span>
+            <button class="btn btn-primary" @click='subscribe'>订阅</button>
+            <span> {{ notation }} </span>
+        </span>
+        </div>
+
+
         <h4>消息区</h4>
         <table class="table">
             <thead>
@@ -33,15 +51,6 @@
                 </tr>
             </tbody>
         </table>
-        <h4>订阅区</h4>
-        <select class="custom-select mb-3" v-model='selected'>
-            <option disabled value="">请选择</option>
-            <option v-for="shop in shops" :value="shop"> {{ shop.name }} </option>
-        </select>
-        <span>
-            <button class="btn btn-primary" @click='subscribe'>订阅</button>
-            <span> {{ notation }} </span>
-        </span>
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
