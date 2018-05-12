@@ -26,13 +26,13 @@
                 <option v-for="shop in shops" :value="shop"> {{ shop.name }} </option>
             </select>
             <span>
-            <button class="btn btn-primary" @click='subscribe'>订阅</button>
-            <span> {{ notation }} </span>
-        </span>
+                <button class="btn btn-primary" @click='subscribe'>订阅</button>
+                <span> {{ notation }} </span>
+            </span>
         </div>
 
 
-        <h4>消息区</h4>
+        <h4>消息区 {{subscribed}}</h4>
         <table class="table">
             <thead>
                 <tr>
@@ -55,6 +55,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcss.com/qs/6.5.2/qs.min.js"></script>
     <script>
         var app = new Vue({
             el: '#app',
@@ -62,15 +63,28 @@
                 shops: [],
                 selected: '',
                 notation: '',
-                messages: []
+                messages: [],
+                subscribed: []
             },
             methods: {
                 subscribe: function () {
                     if (this.selected == '') {
                         this.notation = '请先选择一个交易所'
                     } else {
-                        this.notation = '正在尝试链接"' + this.selected.name + '网"'
                         // 此处使用 ajax（RESTful风格）向“服务一”发送注册订阅请求
+                        axios.post('/subscribe/', Qs.stringify({
+                                name: 'Xyy',
+                                shop: this.selected.id
+                            }))
+                            .then(function (response) {
+                                console.log(response);
+                                alert("连接成功，正在接收" + app.selected.name + "网的信息")
+                                if (app.subscribed.indexOf(app.selected.name) == -1)
+                                    app.subscribed.push(app.selected.name)
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
                     }
                 }
             },
