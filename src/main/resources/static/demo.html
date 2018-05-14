@@ -72,15 +72,14 @@
                         this.notation = '请先选择一个交易所'
                     } else {
                         // 此处使用 ajax（RESTful风格）向“服务一”发送注册订阅请求
-                        axios.post('/subscribe/', Qs.stringify({
+                        if (app.subscribed.indexOf(app.selected.name) == -1)
+                            axios.post('/subscribe/', Qs.stringify({
                                 name: 'Xyy',
                                 shop: this.selected.id
                             }))
                             .then(function (response) {
                                 console.log(response);
-                                alert("连接成功，正在接收" + app.selected.name + "网的信息")
-                                if (app.subscribed.indexOf(app.selected.name) == -1)
-                                    app.subscribed.push(app.selected.name)
+                                app.subscribed.push(app.selected.name)
                             })
                             .catch(function (error) {
                                 console.log(error);
@@ -95,14 +94,14 @@
                         app.shops = response.data
                     })
                 // 此处与“服务二”建立 WebSocket 连接，以更新 messages
-                var interval = setInterval(function () {
-                    if (app.messages.length > 3) clearInterval(interval)
-                    app.messages.push({
-                        shop: '火币',
-                        content: '测试消息',
-                        time: '18:23'
-                    })
-                }, 2000)
+                var websocket = new WebSocket("ws://localhost:8090/demo/websocket");
+                websocket.onopen = function () {
+                    alert("WebSocket连接成功");
+                }
+                websocket.onmessage = function (event) {
+                    console.log(event)
+                    app.messages.push(JSON.parse(event.data))
+                }
             }
         })
     </script>
