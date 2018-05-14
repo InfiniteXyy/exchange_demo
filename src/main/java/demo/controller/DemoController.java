@@ -1,6 +1,7 @@
 package demo.controller;
 
 import demo.domain.Shop;
+import demo.proto.SubscriberClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,6 +11,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/")
 public class DemoController {
+    private final SubscriberClient rpcClient = new SubscriberClient("127.0.0.1",50051);
+
     private static List<Shop> shops = Arrays.asList(
             new Shop(1, "火币", "火的力量"),
             new Shop(2, "水币", "水的力量"),
@@ -41,7 +44,7 @@ public class DemoController {
     @PostMapping("subscribe")
     public @ResponseBody
     String subscribe(@RequestParam String name, @RequestParam String shop) {
-        System.out.println(name + shop);
+        rpcClient.transfer(name, shop);
         return "success";
     }
 }

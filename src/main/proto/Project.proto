@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_outer_classname = "ProjectProto";
+option java_multiple_files = true;
+
+package ProjectGrpc;
+
+// The greeting service definition.
+service Transfer {
+  // Sends a greeting
+  rpc InformationTo (PersonRequest) returns (PersonReply) {}
+}
+message PersonRequest{
+  string name = 1;
+  string need = 2;
+}
+message PersonReply{
+  string message = 1;
+}
